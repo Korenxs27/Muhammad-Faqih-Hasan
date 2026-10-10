@@ -126,6 +126,18 @@
     background-color: #E5E5E5;
     color: #18181B;
   }
+
+  /* Hilangkan scrollbar putih bawaan iframe Spotify */
+  iframe {
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+  }
+
+  iframe::-webkit-scrollbar {
+    display: none !important;
+    width: 0px !important;
+    background: transparent !important;
+  }
 }
 
 @layer utilities {
