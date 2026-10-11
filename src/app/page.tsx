@@ -158,7 +158,7 @@ export default function Home() {
       desc: "Portal resmi organisasi kampus dengan fitur galeri foto horizontal scroll interaktif, pengumuman event, dan tata letak responsif.",
       techStack: ["React", "Next.js", "Framer Motion", "Tailwind"],
       image: "./images/bem.png",
-      link: "https://bemlp3ijakarta.com",
+      link: "https://bemlp3ijaksel.com",
     },
     {
       id: "03",
