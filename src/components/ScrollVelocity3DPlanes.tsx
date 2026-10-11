@@ -46,7 +46,7 @@ const GALLERY_ITEMS: GalleryItem[] = [
     title: 'VOLUNTEER',
     subtitle: 'VOLUNTEER BEM LP3I',
     description: 'Volunteer design untuk BEM LP3I Jakarta Selatan dengan tujuan meningkatkan partisipasi mahasiswa dalam kegiatan sosial.',
-    image: './images/Volunteer.png',
+    image: './images/volunteer.png',
   },
   {
     id: 'Bazar',
@@ -62,7 +62,7 @@ const GALLERY_ITEMS: GalleryItem[] = [
     title: 'KARTINI',
     subtitle: 'KARTINI DESIGN',
     description: 'Kartini design untuk memperingati hari Kartini dengan desain yang modern dan interaktif.',
-    image: './images/kartini.png',
+    image: './images/Kartini.png',
   },
 ];
 
