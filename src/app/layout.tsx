@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   // Title Format Ideal: Nama Utama | Subtitle/Role
   title: {
-    default: "Muhammad Faqih Hasan | UI/UX Designer & Frontend Developer",
+    default: "Muhammad Faqih Hasan",
     template: "%s | Muhammad Faqih Hasan",
   },
   description:

@@ -32,8 +32,109 @@ function SpotifyDiscIcon({ className = "" }: { className?: string }) {
   );
 }
 
-const ABOUT_STATEMENT = 
-  "Halo! Saya Muhammad Faqih Hasan, seorang mahasiswa aktif sekaligus penggiat UI/UX dan desain kreatif yang saat ini turut berkontribusi di Badan Pengurus Harian (BPH) Politeknik LP3I Jakarta Pasar Minggu, berfokus pada perancangan pengalaman digital yang intuitif dan pengembangan web modern.";
+// KAMUS DUAL BAHASA (INDONESIA & ENGLISH)
+const TRANSLATIONS = {
+  ID: {
+    heroBio: "Halo! Saya Faqih, seorang UI/UX Designer & Frontend Developer yang berfokus pada perancangan antarmuka digital yang intuitif, estetis, dan responsif.",
+    btnDesign: "Desain Saya",
+    btnProjects: "Proyek Saya",
+    aboutTitle: "Tentang Saya",
+    aboutStatement: "Halo, saya Muhammad Faqih Hasan, mahasiswa aktif dan UI/UX Designer yang berfokus pada desain kreatif, pengalaman pengguna, serta pengembangan web modern. Saat ini, saya juga berkontribusi di BPH Politeknik LP3I Jakarta Kampus Pasar Minggu.",
+    projectsSection: "Proyek",
+    projectsTitle: "Proyek Saya",
+    footerHeading: "Tertarik Bekerja Sama?",
+    footerSubheading: "Silakan kirimkan pesan Anda untuk menjalin kerja sama.",
+    footerEmailBtn: "Hubungi Lewat Email",
+    projects: [
+      {
+        id: "01",
+        title: "Desa Wisata Tugu Selatan",
+        category: "Next.js & Headless WordPress",
+        desc: "Platform pariwisata terintegrasi dengan pemetaan lokasi dinamis, peta interaktif, serta manajemen destinasi berbasis headless CMS.",
+        techStack: ["Next.js", "WordPress", "Tailwind CSS", "REST API"],
+        image: "./images/tuguselatan.png",
+        link: "https://desawisatatuguselatan.com",
+      },
+      {
+        id: "02",
+        title: "Website BEM LP3I Jakarta",
+        category: "Frontend Development & Motion",
+        desc: "Portal resmi organisasi kampus dengan fitur galeri foto horizontal scroll interaktif, pengumuman event, dan tata letak responsif.",
+        techStack: ["React", "Next.js", "Framer Motion", "Tailwind"],
+        image: "./images/bem.png",
+        link: "https://bemlp3ijaksel.com",
+      },
+      {
+        id: "03",
+        title: "Desa Wisata Bojongrangkas",
+        category: "Interactive WebGIS & Next.js",
+        desc: "Pengembangan sitemap dan antarmuka peta interaktif desa wisata Bojong Rangkas terintegrasi API.",
+        techStack: ["Next.js", "REST API", "Tailwind CSS", "WordPress"],
+        image: "./images/bojongrangkas.png",
+        link: "https://desawisatabojongrangkas.com",
+      },
+      {
+        id: "04",
+        title: "HYPECORE Streetwear Brand",
+        category: "Branding & E-Commerce",
+        desc: "Pengembangan konsep identitas visual brand luxury streetwear dan landing page e-commerce berestetika modern.",
+        techStack: ["WordPress", "Elementor"],
+        image: "./images/hypecore.png",
+        link: "https://hypecore.biznityhub.com",
+      }
+    ]
+  },
+  EN: {
+    heroBio: "Hello! I am Faqih, a UI/UX Designer & Frontend Developer focused on crafting intuitive, aesthetic, and responsive digital interfaces.",
+    btnDesign: "My Designs",
+    btnProjects: "My Projects",
+    aboutTitle: "About Me",
+    aboutStatement: "Hello, I am Muhammad Faqih Hasan, an active student and UI/UX Designer focusing on creative design, user experience, and modern web development. Currently, I also contribute at BPH Politeknik LP3I Jakarta Pasar Minggu Campus.",
+    projectsSection: "Projects",
+    projectsTitle: "My Projects",
+    footerHeading: "Interested in Collaborating?",
+    footerSubheading: "Feel free to send a message to start working together.",
+    footerEmailBtn: "Contact via Email",
+    projects: [
+      {
+        id: "01",
+        title: "Tugu Selatan Tourism Village",
+        category: "Next.js & Headless WordPress",
+        desc: "An integrated tourism platform featuring dynamic location mapping, interactive maps, and headless CMS-based destination management.",
+        techStack: ["Next.js", "WordPress", "Tailwind CSS", "REST API"],
+        image: "./images/tuguselatan.png",
+        link: "https://desawisatatuguselatan.com",
+      },
+      {
+        id: "02",
+        title: "BEM LP3I Jakarta Website",
+        category: "Frontend Development & Motion",
+        desc: "Official campus student board portal featuring an interactive horizontal scroll photo gallery, event announcements, and responsive layout.",
+        techStack: ["React", "Next.js", "Framer Motion", "Tailwind"],
+        image: "./images/bem.png",
+        link: "https://bemlp3ijaksel.com",
+      },
+      {
+        id: "03",
+        title: "Bojongrangkas Tourism Village",
+        category: "Interactive WebGIS & Next.js",
+        desc: "Sitemap development and interactive map interface for Bojong Rangkas tourism village integrated with API.",
+        techStack: ["Next.js", "REST API", "Tailwind CSS", "WordPress"],
+        image: "./images/bojongrangkas.png",
+        link: "https://desawisatabojongrangkas.com",
+      },
+      {
+        id: "04",
+        title: "HYPECORE Streetwear Brand",
+        category: "Branding & E-Commerce",
+        desc: "Visual identity concept development for a luxury streetwear brand along with a modern aesthetic e-commerce landing page.",
+        techStack: ["WordPress", "Elementor"],
+        image: "./images/hypecore.png",
+        link: "https://hypecore.biznityhub.com",
+      }
+    ]
+  }
+};
 
 const START_OPACITY = 0.2;
 const SPREAD = 0.8;
@@ -93,7 +194,7 @@ function Word({
   );
 }
 
-function TextScrollWordRevealAbout() {
+function TextScrollWordRevealAbout({ statement }: { statement: string }) {
   const sectionRef = useRef<HTMLDivElement>(null);
   const reducedMotion = useReducedMotion();
   const { scrollYProgress } = useScroll({
@@ -101,12 +202,12 @@ function TextScrollWordRevealAbout() {
     offset: ["start 0.85", "end 0.4"],
   });
 
-  const words = ABOUT_STATEMENT.split(" ");
+  const words = statement.split(" ");
 
   return (
     <div ref={sectionRef} className="w-full">
       <p 
-        aria-label={ABOUT_STATEMENT} 
+        aria-label={statement} 
         className="text-lg sm:text-2xl lg:text-3xl font-medium text-justify text-white leading-relaxed tracking-tight flex flex-wrap gap-x-[0.35em] gap-y-1.5"
       >
         {words.map((word, index) => (
@@ -130,6 +231,12 @@ export default function Home() {
   const [showScrollIndicator, setShowScrollIndicator] = useState(true);
   const [selectedProjectIdx, setSelectedProjectIdx] = useState(0);
 
+  // STATE BAHASA GLOBAL ('ID' | 'EN')
+  const [lang, setLang] = useState<'ID' | 'EN'>('ID');
+
+  // STATE DETEKSI MODAL GALERI AKTIF (UNTUK SEMBUNYIKAN NAVBAR)
+  const [isGalleryOpen, setIsGalleryOpen] = useState(false);
+
   // UKURAN FONT OPTION WHEEL DIBUAT DINAMIS UNTUK SCREEN HP
   const [wheelFontSize, setWheelFontSize] = useState(2.2);
 
@@ -140,46 +247,9 @@ export default function Home() {
 
   const heroRef = useRef<HTMLDivElement>(null);
 
-  // DATA 5 PROYEK
-  const projectsData = [
-    {
-      id: "01",
-      title: "Desa Wisata Tugu Selatan",
-      category: "Next.js & Headless WordPress",
-      desc: "Platform pariwisata terintegrasi dengan pemetaan lokasi dinamis, peta interaktif, serta manajemen destinasi berbasis headless CMS.",
-      techStack: ["Next.js", "WordPress", "Tailwind CSS", "REST API"],
-      image: "./images/tuguselatan.png",
-      link: "https://desawisatatuguselatan.com",
-    },
-    {
-      id: "02",
-      title: "Website BEM LP3I Jakarta",
-      category: "Frontend Development & Motion",
-      desc: "Portal resmi organisasi kampus dengan fitur galeri foto horizontal scroll interaktif, pengumuman event, dan tata letak responsif.",
-      techStack: ["React", "Next.js", "Framer Motion", "Tailwind"],
-      image: "./images/bem.png",
-      link: "https://bemlp3ijaksel.com",
-    },
-    {
-      id: "03",
-      title: "Desa Wisata Bojongrangkas",
-      category: "Interactive WebGIS & Next.js",
-      desc: "Pengembangan sitemap dan antarmuka peta interaktif desa wisata Bojong Rangkas terintegrasi API.",
-      techStack: ["Next.js", "REST API", "Tailwind CSS", "WordPress"],
-      image: "./images/bojongrangkas.png",
-      link: "https://desawisatabojongrangkas.com",
-    },
-    {
-      id: "04",
-      title: "HYPECORE Streetwear Brand",
-      category: "Branding & E-Commerce",
-      desc: "Pengembangan konsep identitas visual brand luxury streetwear dan landing page e-commerce berestetika modern.",
-      techStack: ["WordPress", "Elementor"],
-      image: "./images/hypecore.png",
-      link: "https://hypecore.biznityhub.com",
-    }
-  ];
-
+  // DATA TEKS TERJEMAHAN AKTIF
+  const t = TRANSLATIONS[lang];
+  const projectsData = t.projects;
   const projectTitles = projectsData.map((p) => p.title);
   const currentProj = projectsData[selectedProjectIdx] || projectsData[0];
 
@@ -189,8 +259,25 @@ export default function Home() {
     setIsMinimized(false);
   };
 
+  // KUNCI SCROLL HALAMAN UTAMA SAAT MODAL SPOTIFY TERBUKA
   useEffect(() => {
-    // MENYESUAIKAN UKURAN TEKS WHEEL DI HP & DESKTOP
+    if (isMusicModalOpen) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
+    } else {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.touchAction = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.touchAction = '';
+    };
+  }, [isMusicModalOpen]);
+
+  useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 640) {
         setWheelFontSize(1.25);
@@ -224,7 +311,7 @@ export default function Home() {
   };
 
   return (
-    <main className="relative w-full bg-[#050505] text-white overflow-hidden min-h-screen">
+    <main className="relative w-full bg-[#050505] text-white min-h-screen">
       
       {/* GLOBAL PARTICLES BACKGROUND */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -241,9 +328,14 @@ export default function Home() {
         />
       </div>
 
-      {/* FLOATING NAVBAR */}
+      {/* FLOATING NAVBAR DENGAN FITUR TOGGLE BAHASA */}
       <div className="relative z-20">
-        <Navbar onOpenMusicModal={handleOpenMusic} />
+        <Navbar 
+          onOpenMusicModal={handleOpenMusic} 
+          isGalleryOpen={isGalleryOpen} 
+          lang={lang}
+          onLanguageChange={(newLang) => setLang(newLang)}
+        />
       </div>
 
       {/* 1. HERO SECTION */}
@@ -253,7 +345,6 @@ export default function Home() {
           {/* TEKS HERO (KOLOM KIRI) */}
           <div className="w-full lg:col-span-7 flex flex-col items-start justify-center space-y-2 sm:space-y-3 lg:space-y-4 text-left">
             
-            {/* CONTAINER TECH TEXT */}
             <div className="w-full h-[65px] sm:h-[100px] md:h-[120px] lg:h-[145px] relative -ml-2 sm:-ml-4">
               <TechText
                 text="MUHAMMAD FAQIH HASAN"
@@ -280,7 +371,7 @@ export default function Home() {
             </div>
 
             <p className="text-xs sm:text-base text-zinc-400 max-w-xl font-medium leading-relaxed pt-1">
-              Halo! Saya Faqih, seorang UI/UX Designer & Frontend Developer yang berfokus pada perancangan antarmuka digital yang intuitif, estetis, dan responsif.
+              {t.heroBio}
             </p>
 
             <div className="flex flex-wrap items-center gap-3 pt-3">
@@ -288,14 +379,14 @@ export default function Home() {
                 href="#design" 
                 className="px-6 py-3 rounded-xl bg-white text-black hover:bg-zinc-200 font-semibold text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 group"
               >
-                Design Me
+                {t.btnDesign}
                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
               </a>
               <a 
                 href="#projects" 
                 className="px-6 py-3 rounded-xl border border-zinc-700 text-white hover:bg-zinc-900 font-semibold text-xs sm:text-sm transition-all"
               >
-                Projects Me
+                {t.btnProjects}
               </a>
             </div>
           </div>
@@ -324,7 +415,8 @@ export default function Home() {
       <section id="about" className="relative z-10 w-full py-24 md:py-32 px-6 md:px-16 lg:px-24 border-t border-zinc-800/80 bg-[#080808]/80 backdrop-blur-sm">
         <div className="max-w-4xl w-full mx-auto flex flex-col items-start gap-8 z-10">
           <FoldText
-            text="About Me"
+            key={t.aboutTitle}
+            text={t.aboutTitle}
             splitBy="char"
             hinge="top"
             trigger="scroll"
@@ -335,23 +427,27 @@ export default function Home() {
             color="#FFFFFF"
           />
 
-          <TextScrollWordRevealAbout />
+          <TextScrollWordRevealAbout statement={t.aboutStatement} />
         </div>
       </section>
 
       {/* 3. INTERACTIVE GALLERY SECTION */}
-      <section id="design" className="relative z-10 w-full border-t border-zinc-800/80 bg-black">
-        <ScrollTriggeredGallery />
-      </section>
+<section id="design" className="relative z-10 w-full border-t border-zinc-800/80 bg-black">
+  <ScrollTriggeredGallery 
+    onModalChange={(isOpen) => setIsGalleryOpen(isOpen)} 
+    lang={lang} 
+  />
+</section>
 
       {/* 4. OPTION WHEEL PROJECT SHOWCASE SECTION */}
       <section id="projects" className="relative z-10 w-full py-16 lg:py-24 px-6 md:px-16 lg:px-24 bg-[#050505]/90 border-t border-zinc-800/80 backdrop-blur-sm">
         <div className="max-w-7xl mx-auto flex flex-col gap-8 lg:gap-10">
           
           <div className="flex flex-col items-start space-y-1">
-            <span className="text-xs font-mono tracking-widest text-[#1DB954] uppercase">Projects</span>
+            <span className="text-xs font-mono tracking-widest text-[#1DB954] uppercase">{t.projectsSection}</span>
             <FoldText
-              text="My Projects"
+              key={t.projectsTitle}
+              text={t.projectsTitle}
               splitBy="char"
               hinge="top"
               trigger="scroll"
@@ -368,6 +464,7 @@ export default function Home() {
             {/* OPTION WHEEL (KOLOM KIRI) */}
             <div className="lg:col-span-6 h-[180px] sm:h-[240px] lg:h-full relative overflow-hidden flex items-center">
               <OptionWheel 
+                key={lang}
                 items={projectTitles}
                 defaultSelected={selectedProjectIdx}
                 textColor="#52525b"
@@ -391,7 +488,7 @@ export default function Home() {
             <div className="lg:col-span-6 h-full flex flex-col justify-center relative">
               <AnimatePresence mode="wait">
                 <motion.div 
-                  key={currentProj.id}
+                  key={`${currentProj.id}-${lang}`}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
@@ -454,18 +551,18 @@ export default function Home() {
       {/* 5. FOOTER / CONTACT */}
       <footer id="contact" className="relative z-10 w-full py-16 px-6 border-t border-zinc-800/80 bg-black/90 text-center">
         <div className="max-w-3xl mx-auto space-y-6">
-          <h2 className="text-2xl md:text-3xl font-bold text-white">Tertarik Bekerja Sama?</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white">{t.footerHeading}</h2>
           <p className="text-xs sm:text-sm text-zinc-400">
-            Silakan kirimkan pesan untuk diskusi proyek UI/UX design maupun pengembangan website.
+            {t.footerSubheading}
           </p>
           <a 
             href="mailto:faqihhasan217@gmail.com" 
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white text-black hover:bg-zinc-200 text-xs sm:text-sm font-semibold transition-all shadow-md"
           >
-            <Mail size={16} /> Hubungi Lewat Email
+            <Mail size={16} /> {t.footerEmailBtn}
           </a>
           <p className="text-xs text-zinc-500 pt-8">
-            © {new Date().getFullYear()} Muhammad Faqih Hasan. All rights reserved.
+            © {new Date().getFullYear()} Muhammad Faqih Hasan.
           </p>
         </div>
       </footer>

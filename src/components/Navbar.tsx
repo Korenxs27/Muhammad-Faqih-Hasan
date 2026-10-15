@@ -15,17 +15,34 @@ export const MY_PLAYLIST_ID = "3v6lpzQWgsT5ydXJnriB69";
 
 interface NavbarProps {
   onOpenMusicModal: () => void;
+  isGalleryOpen?: boolean;
+  lang?: 'ID' | 'EN';
+  onLanguageChange?: (lang: 'ID' | 'EN') => void;
 }
 
-export default function Navbar({ onOpenMusicModal }: NavbarProps) {
+export default function Navbar({ 
+  onOpenMusicModal, 
+  isGalleryOpen = false,
+  lang = 'ID',
+  onLanguageChange 
+}: NavbarProps) {
   const [activeTab, setActiveTab] = useState('Home');
   const navItems = ['Home', 'About', 'Design', 'Projects'];
 
+  if (isGalleryOpen) return null;
+
+  const toggleLanguage = () => {
+    const nextLang = lang === 'ID' ? 'EN' : 'ID';
+    if (onLanguageChange) {
+      onLanguageChange(nextLang);
+    }
+  };
+
   return (
-    <header className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-3 sm:px-4">
+    <header className="fixed top-4 sm:top-6 left-0 right-0 z-50 flex justify-center px-3 sm:px-4 transition-all duration-300">
       <nav className="flex items-center justify-between gap-1.5 sm:gap-2 p-1.5 sm:p-2 rounded-full bg-neutral-900/80 backdrop-blur-md border border-white/10 shadow-2xl max-w-full overflow-hidden">
         
-        {/* Menu Navigasi dengan scroll horizontal otomatis jika layar sangat kecil */}
+        {/* Menu Navigasi */}
         <div className="flex items-center gap-0.5 sm:gap-1 overflow-x-auto no-scrollbar scroll-smooth px-1">
           {navItems.map((item) => {
             const isActive = activeTab === item;
@@ -46,14 +63,28 @@ export default function Navbar({ onOpenMusicModal }: NavbarProps) {
           })}
         </div>
 
-        {/* Tombol Spotify */}
-        <button
-          onClick={onOpenMusicModal}
-          className="p-2 sm:p-2.5 rounded-full bg-[#1DB954]/20 border border-[#1DB954]/40 text-[#1DB954] hover:bg-[#1DB954] hover:text-black transition-all duration-300 flex items-center justify-center shadow-lg shrink-0"
-          title="Dengarkan Spotify Playlist Faqih"
-        >
-          <SpotifyIcon size={16} />
-        </button>
+        {/* Action Group: Spotify & Toggle Bahasa */}
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+          <button
+            onClick={onOpenMusicModal}
+            className="p-2 sm:p-2.5 rounded-full bg-[#1DB954]/20 border border-[#1DB954]/40 text-[#1DB954] hover:bg-[#1DB954] hover:text-black transition-all duration-300 flex items-center justify-center shadow-lg shrink-0"
+            title="Dengarkan Spotify Playlist Faqih"
+          >
+            <SpotifyIcon size={16} />
+          </button>
+
+          {/* Tombol Toggle Bahasa ID / EN */}
+          <button
+            onClick={toggleLanguage}
+            className="px-2.5 py-1 sm:px-3 sm:py-1.5 rounded-full bg-white/10 border border-white/15 text-white hover:bg-white/20 text-xs font-mono font-bold tracking-wider transition-all duration-300 flex items-center justify-center shadow-lg shrink-0 select-none active:scale-95 cursor-pointer"
+            title="Ubah Bahasa / Switch Language"
+          >
+            <span className={lang === 'ID' ? 'text-[#1DB954] font-black' : 'text-neutral-400'}>ID</span>
+            <span className="text-neutral-600 mx-0.5">/</span>
+            <span className={lang === 'EN' ? 'text-[#1DB954] font-black' : 'text-neutral-400'}>EN</span>
+          </button>
+        </div>
+
       </nav>
     </header>
   );

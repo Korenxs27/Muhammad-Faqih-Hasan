@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence, type Variants } from 'framer-motion';
-import { X, ChevronLeft, ChevronRight, Heart, Smile, ZoomIn } from 'lucide-react';
+import { Heart, Smile, ZoomIn } from 'lucide-react';
 import FoldText from '@/components/FoldText';
 import Particles from './Particles';
 
@@ -10,9 +10,14 @@ export interface GalleryItem {
   id: string;
   index: string;
   title: string;
-  subtitle: string;
-  description: string;
+  subtitle: { ID: string; EN: string };
+  description: { ID: string; EN: string };
   image: string;
+}
+
+interface ScrollTriggeredGalleryProps {
+  onModalChange?: (isOpen: boolean) => void;
+  lang?: 'ID' | 'EN';
 }
 
 const GALLERY_ITEMS: GalleryItem[] = [
@@ -20,48 +25,84 @@ const GALLERY_ITEMS: GalleryItem[] = [
     id: 'Open Recruitment',
     index: '01',
     title: 'OPEN RECRUITMENT',
-    subtitle: 'Open Recruitment BEM LP3I Jakarta Selatan',
-    description: 'Open recruitment website untuk BEM LP3I Jakarta Selatan dengan desain modern dan interaktif.',
+    subtitle: {
+      ID: 'Open Recruitment BEM LP3I Jakarta Selatan',
+      EN: 'Open Recruitment BEM LP3I South Jakarta'
+    },
+    description: {
+      ID: 'Open recruitment website untuk BEM LP3I Jakarta Selatan dengan desain modern dan interaktif.',
+      EN: 'Open recruitment website design for BEM LP3I South Jakarta featuring a modern and interactive layout.'
+    },
     image: './images/OPEN.png',
   },
   {
     id: 'Donor Darah',
     index: '02',
     title: 'DONOR DARAH',
-    subtitle: 'CAMPAIGN DONOR DARAH',
-    description: 'Donor darah design campaign untuk meningkatkan kesadaran masyarakat akan pentingnya donor darah.',
+    subtitle: {
+      ID: 'CAMPAIGN DONOR DARAH',
+      EN: 'BLOOD DONATION CAMPAIGN'
+    },
+    description: {
+      ID: 'Donor darah design campaign untuk meningkatkan kesadaran masyarakat akan pentingnya donor darah.',
+      EN: 'Blood donation campaign design aimed at raising public awareness about the importance of donating blood.'
+    },
     image: './images/donor darah.png',
   },
   {
     id: 'Qurban',
     index: '03',
     title: 'QURBAN',
-    subtitle: 'CAMPAIGN QURBAN',
-    description: 'Campaign qurban design untuk meningkatkan partisipasi masyarakat dalam kegiatan qurban.',
+    subtitle: {
+      ID: 'CAMPAIGN QURBAN',
+      EN: 'QURBAN CAMPAIGN'
+    },
+    description: {
+      ID: 'Campaign qurban design untuk meningkatkan partisipasi masyarakat dalam kegiatan qurban.',
+      EN: 'Qurban campaign visual design created to increase community participation during Eid al-Adha.'
+    },
     image: './images/qurban.png',
   },
   {
     id: 'Volunteer',
     index: '04',
     title: 'VOLUNTEER',
-    subtitle: 'VOLUNTEER BEM LP3I',
-    description: 'Volunteer design untuk BEM LP3I Jakarta Selatan dengan tujuan meningkatkan partisipasi mahasiswa dalam kegiatan sosial.',
+    subtitle: {
+      ID: 'VOLUNTEER BEM LP3I',
+      EN: 'BEM LP3I VOLUNTEER'
+    },
+    description: {
+      ID: 'Volunteer design untuk BEM LP3I Jakarta Selatan dengan tujuan meningkatkan partisipasi mahasiswa dalam kegiatan sosial.',
+      EN: 'Volunteer recruitment design for BEM LP3I South Jakarta aiming to boost student engagement in social activities.'
+    },
     image: './images/volunteer.png',
   },
   {
     id: 'Bazar',
     index: '05',
     title: 'BAZAR',
-    subtitle: 'BAZAR BEM LP3I',
-    description: 'Bazar design untuk BEM LP3I Jakarta Selatan dengan tujuan meningkatkan partisipasi mahasiswa dalam kegiatan bazar.',
+    subtitle: {
+      ID: 'BAZAR BEM LP3I',
+      EN: 'BEM LP3I BAZAAR'
+    },
+    description: {
+      ID: 'Bazar design untuk BEM LP3I Jakarta Selatan dengan tujuan meningkatkan partisipasi mahasiswa dalam kegiatan bazar.',
+      EN: 'Event bazaar graphic design crafted to promote student entrepreneurial events at BEM LP3I South Jakarta.'
+    },
     image: './images/bazar.png',
   },
   {
     id: 'Kartini',
     index: '06',
     title: 'KARTINI',
-    subtitle: 'KARTINI DESIGN',
-    description: 'Kartini design untuk memperingati hari Kartini dengan desain yang modern dan interaktif.',
+    subtitle: {
+      ID: 'KARTINI DESIGN',
+      EN: 'KARTINI DAY DESIGN'
+    },
+    description: {
+      ID: 'Kartini design untuk memperingati hari Kartini dengan desain yang modern dan interaktif.',
+      EN: 'Commemorative poster design for Kartini Day styled with a sleek and modern visual approach.'
+    },
     image: './images/Kartini.png',
   },
 ];
@@ -93,13 +134,35 @@ const cardVariants: Variants = {
   },
 };
 
-export default function ScrollTriggeredGallery() {
+// UI TEXT DICTIONARY UNTUK MODAL & SECTION
+const UI_TEXT = {
+  ID: {
+    sectionTag: 'Desain',
+    sectionTitle: 'Desain Saya',
+    zoomLabel: 'Klik untuk perbesar',
+    prevBtn: 'PREV',
+    nextBtn: 'NEXT',
+    closeBtn: 'TUTUP',
+    likesTag: 'Suka'
+  },
+  EN: {
+    sectionTag: 'Design',
+    sectionTitle: 'My Design',
+    zoomLabel: 'Click to enlarge',
+    prevBtn: 'PREV',
+    nextBtn: 'NEXT',
+    closeBtn: 'CLOSE',
+    likesTag: 'Likes'
+  }
+};
+
+export default function ScrollTriggeredGallery({ onModalChange, lang = 'ID' }: ScrollTriggeredGalleryProps) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
   const [activePickerId, setActivePickerId] = useState<string | null>(null);
-  
-  // STATE BARU UNTUK POPUP FULLSCREEN ZOOM GAMBAR
   const [zoomedImage, setZoomedImage] = useState<string | null>(null);
+
+  const tUI = UI_TEXT[lang];
 
   const [engagement, setEngagement] = useState<{ [key: string]: EngagementData }>({
     'Open Recruitment': { likes: 24, isLiked: false, emotes: { '🔥': 12, '🚀': 8 }, userEmotes: {} },
@@ -113,15 +176,27 @@ export default function ScrollTriggeredGallery() {
   const selectedItem = GALLERY_ITEMS.find((item) => item.id === selectedId);
 
   useEffect(() => {
-    if (selectedId || zoomedImage) {
+    const isOpen = Boolean(selectedId || zoomedImage);
+    
+    if (onModalChange) {
+      onModalChange(isOpen);
+    }
+
+    if (isOpen) {
       document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+      document.body.style.touchAction = 'none';
     } else {
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.touchAction = '';
     }
     return () => {
       document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
+      document.body.style.touchAction = '';
     };
-  }, [selectedId, zoomedImage]);
+  }, [selectedId, zoomedImage, onModalChange]);
 
   const handleLike = (e: React.MouseEvent, id: string) => {
     e.stopPropagation();
@@ -182,14 +257,13 @@ export default function ScrollTriggeredGallery() {
 
       {/* KONTEN GALERI */}
       <div className="relative z-10">
-        
-        {/* HEADER JUDUL */}
         <div className="max-w-4xl mx-auto text-left mb-16 flex flex-col items-start gap-2">
           <span className="font-mono text-xs text-zinc-500 tracking-widest uppercase">
-            Design
+            {tUI.sectionTag}
           </span>
           <FoldText
-            text="My Design"
+            key={`${tUI.sectionTitle}-${lang}`}
+            text={tUI.sectionTitle}
             splitBy="char"
             hinge="top"
             trigger="scroll"
@@ -201,7 +275,6 @@ export default function ScrollTriggeredGallery() {
           />
         </div>
 
-        {/* LIST KARTU DESAIN */}
         <div className="max-w-md mx-auto flex flex-col gap-24 pb-20">
           {GALLERY_ITEMS.map((item, index) => {
             const stats = engagement[item.id] || { likes: 0, isLiked: false, emotes: {}, userEmotes: {} };
@@ -220,7 +293,6 @@ export default function ScrollTriggeredGallery() {
                 }}
                 className="relative cursor-pointer group flex flex-col items-center"
               >
-                {/* Card Container */}
                 <motion.div
                   variants={cardVariants}
                   whileHover={{ scale: 1.04, rotate: index % 2 === 0 ? -2 : 2 }}
@@ -238,7 +310,6 @@ export default function ScrollTriggeredGallery() {
                     {item.index}
                   </div>
 
-                  {/* ENGAGEMENT STATS OVERLAY DI ATAS KARTU */}
                   <div className="absolute top-4 right-4 flex items-center gap-2 z-20">
                     <button
                       onClick={(e) => handleLike(e, item.id)}
@@ -259,7 +330,6 @@ export default function ScrollTriggeredGallery() {
                           setActivePickerId(activePickerId === item.id ? null : item.id);
                         }}
                         className="p-1.5 rounded-full bg-black/60 border border-zinc-700/60 text-zinc-300 hover:text-white hover:border-zinc-500 backdrop-blur-md transition-all"
-                        title="Tambah reaksi emote"
                       >
                         <Smile size={14} />
                       </button>
@@ -277,9 +347,7 @@ export default function ScrollTriggeredGallery() {
                               <button
                                 key={emote}
                                 onClick={(e) => handleEmoteClick(e, item.id, emote)}
-                                className={`w-7 h-7 flex items-center justify-center rounded-full text-sm hover:scale-125 transition-transform ${
-                                  stats.userEmotes[emote] ? 'bg-zinc-700/80' : 'hover:bg-zinc-800'
-                                }`}
+                                className="w-7 h-7 flex items-center justify-center rounded-full text-sm hover:scale-125 transition-transform"
                               >
                                 {emote}
                               </button>
@@ -290,40 +358,16 @@ export default function ScrollTriggeredGallery() {
                     </div>
                   </div>
 
-                  {/* KONTEN TEXT CARD & EMOTE BADGES BAWAH */}
                   <div className="absolute bottom-6 left-6 right-6 flex flex-col items-start space-y-2">
-                    {Object.keys(stats.emotes).some((key) => stats.emotes[key] > 0) && (
-                      <div className="flex flex-wrap items-center gap-1.5 pt-1">
-                        {Object.entries(stats.emotes).map(([emote, count]) => {
-                          if (count <= 0) return null;
-                          return (
-                            <span
-                              key={emote}
-                              onClick={(e) => handleEmoteClick(e, item.id, emote)}
-                              className={`px-2 py-0.5 rounded-full text-[11px] font-mono border flex items-center gap-1 backdrop-blur-md transition-all ${
-                                stats.userEmotes[emote]
-                                  ? 'bg-zinc-700/80 border-white/40 text-white'
-                                  : 'bg-black/50 border-zinc-800 text-zinc-300'
-                              }`}
-                            >
-                              <span>{emote}</span>
-                              <span className="text-[10px] opacity-80">{count}</span>
-                            </span>
-                          );
-                        })}
-                      </div>
-                    )}
-
                     <h3 className="text-2xl font-black tracking-tight text-white uppercase">
                       {item.title}
                     </h3>
                     <p className="font-mono text-[10px] text-zinc-400 tracking-wider uppercase">
-                      {item.subtitle}
+                      {item.subtitle[lang]}
                     </p>
                   </div>
                 </motion.div>
 
-                {/* HOVER INDICATOR */}
                 <AnimatePresence>
                   {hoveredIdx === index && !selectedId && (
                     <motion.div
@@ -336,13 +380,13 @@ export default function ScrollTriggeredGallery() {
                       <div className="w-12 h-[1px] bg-white/80 flex-shrink-0" />
                       <div className="flex flex-col items-start space-y-1">
                         <span className="font-mono text-[10px] text-zinc-400 tracking-widest uppercase">
-                          {item.index} / {item.subtitle}
+                          {item.index} / {item.subtitle[lang]}
                         </span>
                         <h4 className="text-sm font-bold text-white tracking-wider uppercase">
                           {item.title}
                         </h4>
                         <p className="text-xs text-zinc-300 font-normal leading-relaxed text-left">
-                          {item.description}
+                          {item.description[lang]}
                         </p>
                       </div>
                     </motion.div>
@@ -352,71 +396,68 @@ export default function ScrollTriggeredGallery() {
             );
           })}
         </div>
-
       </div>
 
-      {/* MODAL DETAIL FULLSCREEN MINIMALIS BERCAYA CODROPS / REACT BITS */}
+      {/* MODAL FULLSCREEN DETAIL */}
       <AnimatePresence>
         {selectedItem && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 bg-[#050505] text-white flex flex-col justify-between p-6 sm:p-10 overflow-hidden select-none"
-            onWheel={(e) => e.stopPropagation()}
+            transition={{ duration: 0.25 }}
+            className="fixed inset-0 z-[99999] bg-[#050505] text-white flex flex-col justify-between p-4 sm:p-8 h-screen overflow-hidden select-none"
           >
-            {/* AREA UTAMA: SPLIT 2 KOLOM (KIRI GAMBAR, KANAN TEXT & NAV) */}
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center max-w-7xl w-full mx-auto flex-1 my-auto">
+            <div className="max-w-7xl w-full mx-auto flex-1 grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10 items-center my-auto pb-4">
               
-              {/* KOLOM KIRI: GAMBAR DESAIN POTRET (BISA DIKLIK UNTUK ZOOM POPUP) */}
+              {/* KOLOM KIRI: GAMBAR */}
               <div 
                 onClick={() => setZoomedImage(selectedItem.image)}
-                className="md:col-span-5 lg:col-span-5 h-[360px] sm:h-[480px] w-full rounded-xl overflow-hidden border border-zinc-800 bg-zinc-950 shadow-2xl relative group cursor-zoom-in"
+                className="md:col-span-6 flex items-center justify-center h-full max-h-[50vh] sm:max-h-[58vh] w-full relative group cursor-zoom-in"
               >
-                <img
-                  src={selectedItem.image}
-                  alt={selectedItem.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2 text-white font-mono text-xs">
-                  <ZoomIn size={18} /> Klik untuk perbesar
+                <div className="relative p-2 rounded-2xl bg-zinc-900/80 border border-zinc-800 flex items-center justify-center max-h-full">
+                  <img
+                    src={selectedItem.image}
+                    alt={selectedItem.title}
+                    className="max-h-[48vh] sm:max-h-[55vh] w-auto h-auto object-contain rounded-xl shadow-2xl"
+                  />
+                  <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity rounded-xl flex items-center justify-center gap-2 text-white font-mono text-xs">
+                    <ZoomIn size={18} /> {tUI.zoomLabel}
+                  </div>
                 </div>
               </div>
 
-              {/* KOLOM KANAN: COUNTER, JUDUL, DESKRIPSI, ENGAGEMENT, DAN TOMBOL PREV/NEXT/CLOSE */}
-              <div className="md:col-span-7 lg:col-span-7 flex flex-col justify-center items-start space-y-6 text-left pl-0 md:pl-8">
+              {/* KOLOM KANAN: DETAIL & THUMBNAIL DI BAWAH NAVIGASI */}
+              <div className="md:col-span-6 flex flex-col justify-center items-start space-y-4 text-left">
                 
-                {/* INDEX / COUNTER */}
                 <span className="font-mono text-xs text-zinc-500 tracking-widest uppercase">
                   {selectedItem.index} / {String(GALLERY_ITEMS.length).padStart(2, '0')}
                 </span>
 
-                {/* JUDUL & DESKRIPSI */}
-                <div className="space-y-2">
-                  <h2 className="text-3xl sm:text-5xl font-black tracking-tight text-white uppercase">
+                <div className="space-y-1">
+                  <h2 className="text-2xl sm:text-4xl font-black tracking-tight text-white uppercase">
                     {selectedItem.title}
                   </h2>
-                  <p className="font-mono text-xs text-zinc-400 tracking-wider uppercase">
-                    {selectedItem.subtitle}
+                  <p className="font-mono text-xs text-[#1DB954] tracking-wider uppercase font-semibold">
+                    {selectedItem.subtitle[lang]}
                   </p>
-                  <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed max-w-md pt-2">
-                    {selectedItem.description}
+                  <p className="text-xs sm:text-sm text-zinc-300 leading-relaxed max-w-md pt-1">
+                    {selectedItem.description[lang]}
                   </p>
                 </div>
 
-                {/* ENGAGEMENT BUTTONS & REACTION */}
-                <div className="flex flex-wrap items-center gap-3 pt-2">
+                {/* ENGAGEMENT */}
+                <div className="flex flex-wrap items-center gap-3">
                   <button
                     onClick={(e) => handleLike(e, selectedItem.id)}
-                    className={`px-3.5 py-1.5 rounded-lg border text-xs font-mono flex items-center gap-2 transition-all active:scale-95 ${
+                    className={`px-3 py-1.5 rounded-lg border text-xs font-mono flex items-center gap-2 transition-all ${
                       engagement[selectedItem.id]?.isLiked
                         ? 'bg-red-500/20 border-red-500/50 text-red-400'
-                        : 'bg-zinc-900 border-zinc-800 text-zinc-300 hover:border-zinc-700'
+                        : 'bg-zinc-900 border-zinc-800 text-zinc-300'
                     }`}
                   >
                     <Heart size={14} className={engagement[selectedItem.id]?.isLiked ? 'fill-red-500 text-red-500' : ''} />
-                    <span>{engagement[selectedItem.id]?.likes || 0} Likes</span>
+                    <span>{engagement[selectedItem.id]?.likes || 0} {tUI.likesTag}</span>
                   </button>
 
                   <div className="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 rounded-lg p-1">
@@ -424,7 +465,7 @@ export default function ScrollTriggeredGallery() {
                       <button
                         key={emote}
                         onClick={(e) => handleEmoteClick(e, selectedItem.id, emote)}
-                        className={`px-2 py-0.5 rounded text-xs transition-transform hover:scale-125 ${
+                        className={`px-2 py-0.5 rounded text-xs hover:scale-125 transition-transform ${
                           engagement[selectedItem.id]?.userEmotes[emote] ? 'bg-zinc-800' : ''
                         }`}
                       >
@@ -434,8 +475,8 @@ export default function ScrollTriggeredGallery() {
                   </div>
                 </div>
 
-                {/* TOMBOL PREV, NEXT, DAN CLOSE MINIMALIS */}
-                <div className="flex items-center gap-6 pt-4 text-xs font-mono font-bold tracking-widest uppercase">
+                {/* TOMBOL PREV / NEXT / CLOSE */}
+                <div className="flex items-center gap-6 pt-1 text-xs font-mono font-bold tracking-widest uppercase">
                   <button
                     onClick={() => {
                       const cur = GALLERY_ITEMS.findIndex((i) => i.id === selectedId);
@@ -444,7 +485,7 @@ export default function ScrollTriggeredGallery() {
                     }}
                     className="text-white hover:text-zinc-400 underline underline-offset-8 transition-colors"
                   >
-                    PREV
+                    {tUI.prevBtn}
                   </button>
 
                   <button
@@ -455,71 +496,61 @@ export default function ScrollTriggeredGallery() {
                     }}
                     className="text-white hover:text-zinc-400 underline underline-offset-8 transition-colors"
                   >
-                    NEXT
+                    {tUI.nextBtn}
                   </button>
 
                   <button
                     onClick={() => setSelectedId(null)}
                     className="text-zinc-400 hover:text-red-500 underline underline-offset-8 transition-colors"
                   >
-                    CLOSE
+                    {tUI.closeBtn}
                   </button>
+                </div>
+
+                {/* STRIP THUMBNAIL */}
+                <div className="pt-3 w-full border-t border-zinc-900/80 mt-2">
+                  <div className="flex items-center gap-2.5 overflow-x-auto py-1">
+                    {GALLERY_ITEMS.map((item) => (
+                      <button
+                        key={item.id}
+                        onClick={() => setSelectedId(item.id)}
+                        className={`relative shrink-0 w-12 h-14 sm:w-14 sm:h-16 rounded-lg overflow-hidden border-2 transition-all ${
+                          selectedId === item.id 
+                            ? 'border-[#1DB954] scale-105 opacity-100 shadow-lg' 
+                            : 'border-transparent opacity-40 hover:opacity-80'
+                        }`}
+                      >
+                        <img 
+                          src={item.image} 
+                          alt={item.title} 
+                          className="w-full h-full object-cover pointer-events-none" 
+                        />
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
               </div>
 
             </div>
-
-            {/* STRIP THUMBNAIL HORIZONTAL DI BAWAH (PAS DI BAWAH PREV/NEXT/CLOSE) */}
-            <div className="w-full max-w-7xl mx-auto pt-4 border-t border-zinc-900">
-              <div className="flex items-center justify-center gap-3 overflow-x-auto no-scrollbar py-2">
-                {GALLERY_ITEMS.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => setSelectedId(item.id)}
-                    className={`relative shrink-0 w-12 h-16 sm:w-16 sm:h-20 rounded-md overflow-hidden border transition-all ${
-                      selectedId === item.id 
-                        ? 'border-white scale-105 opacity-100 shadow-lg' 
-                        : 'border-transparent opacity-40 hover:opacity-80'
-                    }`}
-                  >
-                    <img 
-                      src={item.image} 
-                      alt={item.title} 
-                      className="w-full h-full object-cover pointer-events-none" 
-                    />
-                  </button>
-                ))}
-              </div>
-            </div>
-
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* POPUP LIGHTBOX ZOOM GAMBAR FULLSCREEN */}
+      {/* LIGHTBOX ZOOM FULLSCREEN */}
       <AnimatePresence>
         {zoomedImage && (
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.2 }}
             onClick={() => setZoomedImage(null)}
-            className="fixed inset-0 z-[60] bg-black/95 backdrop-blur-xl flex items-center justify-center p-4 sm:p-10 cursor-zoom-out"
+            className="fixed inset-0 z-[100000] bg-black/95 backdrop-blur-2xl flex items-center justify-center p-4 cursor-zoom-out"
           >
-            <button
-              onClick={() => setZoomedImage(null)}
-              className="absolute top-6 right-6 p-3 rounded-full bg-zinc-900/80 border border-zinc-700 text-white hover:bg-zinc-800 transition-colors z-10"
-              title="Tutup Zoom"
-            >
-              <X size={20} />
-            </button>
             <img
               src={zoomedImage}
               alt="Zoomed View"
-              className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
+              className="max-w-full max-h-[88vh] object-contain rounded-lg shadow-2xl pointer-events-none"
             />
           </motion.div>
         )}
