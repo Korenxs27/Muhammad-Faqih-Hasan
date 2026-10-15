@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   // Title Format Ideal: Nama Utama | Subtitle/Role
   title: {
-    default: "Muhammad Faqih Hasan",
+    default: "Muhammad Faqih Hasan | UI/UX Designer & Frontend Developer",
     template: "%s | Muhammad Faqih Hasan",
   },
   description:
@@ -21,16 +21,16 @@ export const metadata: Metadata = {
   authors: [{ name: "Muhammad Faqih Hasan" }],
   creator: "Muhammad Faqih Hasan",
   
-  // Tag Google Search Console
+  // Tag Google Search Console Baru
   verification: {
-    google: "JPosWGw7BhXaKWN9ClVjMBoT5Ca2JIpsLPdhKPncurw",
+    google: "94QwAHR4nKIttpJao-gj2eNcJsrQ4aym-3GfG0fMpZ0",
   },
 
   // Open Graph (Tampilan saat link portofolio dibagikan di WA/LinkedIn/Twitter)
   openGraph: {
     title: "Muhammad Faqih Hasan — Personal Portfolio",
     description: "UI/UX Designer & Frontend Developer Portfolio.",
-    url: "https://domainmu.com", // Ganti dengan URL domain resmimu
+    url: "https://muhammadfaqihhasan.my.id", // Ganti dengan domain .my.id kamu
     siteName: "Muhammad Faqih Hasan Portfolio",
     locale: "id_ID",
     type: "website",
